@@ -1,0 +1,39 @@
+Conecta Delivery — VERSÃO DEMO (apresentação ao cliente)
+========================================================
+
+Pasta: Site menu demo
+Logo: Conecta Delivery (Logo.png)
+
+O que é
+-------
+Clone visual do cardápio para mostrar ao cliente.
+NÃO acessa Supabase / banco de dados.
+NÃO envia pedido no WhatsApp.
+
+Como abrir
+----------
+1. Abra o arquivo index.html no navegador
+   (ou use Live Server / arraste a pasta na Netlify)
+
+2. Fluxo igual ao site real:
+   - Intro (vídeo)
+   - CPF / cadastro
+   - Cardápio, sacola, combos, etc.
+
+CPF de teste já cadastrado
+--------------------------
+CPF: 529.982.247-25
+Nome: Cliente Demonstração
+
+Ou use "Cadastrar" com qualquer CPF válido — fica só no navegador.
+
+Diferenças do site real
+-----------------------
+- Badge amarelo "DEMO" no canto
+- Dados do cardápio estão no próprio HTML
+- Cadastro de cliente só no localStorage do navegador
+- Botão WhatsApp avisa que é demo (não envia)
+
+Site oficial (com banco)
+------------------------
+Use a pasta: Site menu
