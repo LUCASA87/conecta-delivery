@@ -3697,8 +3697,8 @@
       <!-- BOX PIX -->
       <div id="boxPix" style="display:none;background:#f0faf5;border:2px solid #27ae60;border-radius:14px;padding:16px 18px;margin-bottom:1rem;text-align:center">
         <div style="font-size:0.7rem;font-weight:800;letter-spacing:1px;color:#27ae60;text-transform:uppercase;margin-bottom:6px"> Pagamento via PIX</div>
-        <div style="font-size:1.05rem;font-weight:900;color:#1a1a1a;letter-spacing:1px;margin-bottom:4px">56.704.165/0001-07</div>
-        <div style="font-size:0.75rem;color:#555;font-weight:700;margin-bottom:10px">CNPJ &#8212; Conecta Delivery</div>
+        <div style="font-size:1.05rem;font-weight:900;color:#1a1a1a;letter-spacing:1px;margin-bottom:4px">**.***.***/****-**</div>
+        <div style="font-size:0.75rem;color:#555;font-weight:700;margin-bottom:10px">CNPJ &#8212; Conecta Delivery <span style="color:#e67e22">(demo)</span></div>
         <button onclick="copiarPix()" id="btnCopiarPix" style="background:#27ae60;color:#fff;border:none;border-radius:8px;padding:8px 18px;font-family:'Nunito',sans-serif;font-weight:800;font-size:0.82rem;cursor:pointer"> Copiar CNPJ</button>
         <div style="margin-top:10px;font-size:0.75rem;color:#e74c3c;font-weight:700"> Envie o comprovante junto com o pedido no WhatsApp!</div>
       </div>
@@ -5923,12 +5923,15 @@
     }
   }
 
+  const PIX_CHAVE_DEMO = '**.***.***/****-**';
+
   function copiarPix() {
-    navigator.clipboard.writeText('56.704.165/0001-07').then(() => {
+    navigator.clipboard.writeText(PIX_CHAVE_DEMO).then(() => {
       const btn = document.getElementById('btnCopiarPix');
       btn.textContent = ' Copiado!';
+      showToast('Chave PIX fictícia (demo)');
       setTimeout(() => { btn.textContent = ' Copiar CNPJ'; }, 2000);
-    }).catch(() => { showAlerta('CNPJ PIX: 56.704.165/0001-07', ''); });
+    }).catch(() => { showAlerta('CNPJ PIX (demo): ' + PIX_CHAVE_DEMO, ''); });
   }
 
   function waCentralizar(texto, largura) {
@@ -5953,11 +5956,6 @@
   }
 
   async function sendWhatsapp() {
-    if (DEMO_MODE) {
-      showAlerta('Versão DEMO para apresentação — o pedido NÃO é enviado ao WhatsApp nem grava no banco.', '');
-      return;
-    }
-
     if (cart.length === 0) {
       showAlerta('Adicione itens ao pedido antes de finalizar!', '');
       return;
@@ -6038,6 +6036,27 @@
       obs,
     ].filter(Boolean).join('\n');
 
+    // DEMO: não envia WhatsApp / banco — abre a espera com os jogos
+    if (DEMO_MODE) {
+      limparPedidoAposEnvio();
+      closeCart();
+      if (window.MenuPedidoEspera) {
+        await window.MenuPedidoEspera.registrarPedidoAtivo({
+          id: 'local-' + Date.now(),
+          status: 'recebido',
+          total: totalFinal,
+          tipo_entrega: retirada ? 'retirada' : 'entrega',
+          cliente_nome: name,
+          created_at: new Date().toISOString(),
+        }, {
+          cliente_nome: name,
+          tipo_entrega: retirada ? 'retirada' : 'entrega',
+        });
+      }
+      showToast('Demo: pedido simulado — jogue enquanto espera!');
+      return;
+    }
+
     const E = {
       burger:   '', // 
       cliente:  '', // 
@@ -6095,7 +6114,7 @@
     const pgtoLabel = { pix: 'PIX', dinheiro: 'Dinheiro', cartao: 'Cart\u00e3o' }[_pgtoSelecionado];
     msg += `\n\n${E.cartao} *Pagamento:* ${pgtoLabel}`;
     if (_pgtoSelecionado === 'pix') {
-      msg += `\n   Chave PIX (CNPJ): 56.704.165/0001-07`;
+      msg += `\n   Chave PIX (CNPJ): ${PIX_CHAVE_DEMO} (demo)`;
     } else if (_pgtoSelecionado === 'dinheiro') {
       if (_trocoSim) {
         const paraQuanto = parseFloat(document.getElementById('trocoValor').value);
