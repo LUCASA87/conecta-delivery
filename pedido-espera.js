@@ -1483,10 +1483,10 @@
     saveLocal(_pedido);
     _lastKnownStatus = _pedido.status;
     setLastNotifiedStatus(_pedido.status);
-    // Pede permissão para avisos no telefone
-    await pedirPermissaoNotificacao();
+    // Abre o painel/jogos primeiro — notificação não deve bloquear a espera
     startMonitoramento();
     abrirPainel({ games: true });
+    pedirPermissaoNotificacao().catch(() => {});
   }
 
   function temAvaliacaoPendente() {
