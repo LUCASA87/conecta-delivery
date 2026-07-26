@@ -2670,7 +2670,7 @@
     display: none;
     position: fixed;
     inset: 0;
-    z-index: 9800;
+    z-index: 10120;
     background: rgba(10, 6, 4, 0.72);
     align-items: flex-end;
     justify-content: center;
@@ -3965,8 +3965,15 @@
   </div>
 </div>
 
-<!-- Painel de espera + jogos (Snake, Velha, Dominó, Memória) -->
-<script src="pedido-espera.js"></script>
+<!-- Painel de espera + jogos — path absoluto da pasta (evita 404 no GitHub Pages sem /) -->
+<script>
+(function () {
+  var p = location.pathname || '/';
+  if (/\.html?$/i.test(p)) p = p.replace(/\/[^/]*$/, '/');
+  else if (p.charAt(p.length - 1) !== '/') p += '/';
+  document.write('<script src="' + p + 'pedido-espera.js?v=5"><\/script>');
+})();
+</script>
 
 <!-- DEMO: sem Supabase / sem banco -->
 <script>
@@ -5928,6 +5935,84 @@
 
   const PIX_CHAVE_DEMO = '**.***.***/****-**';
 
+  /** Abre status + jogos na demo (com fallback se o script não carregou). */
+  async function abrirPainelEsperaDemo(pedido) {
+    const overlay = document.getElementById('pedidoEsperaOverlay');
+    if (!overlay || !pedido) return false;
+
+    if (window.MenuPedidoEspera) {
+      try {
+        if (typeof window.MenuPedidoEspera.bindUI === 'function') {
+          window.MenuPedidoEspera.bindUI();
+        }
+        if (typeof window.MenuPedidoEspera.registrarPedidoAtivo === 'function') {
+          await window.MenuPedidoEspera.registrarPedidoAtivo(pedido, {
+            cliente_nome: pedido.cliente_nome,
+            tipo_entrega: pedido.tipo_entrega,
+          });
+        } else if (typeof window.MenuPedidoEspera.abrirPainel === 'function') {
+          await window.MenuPedidoEspera.abrirPainel({ games: true });
+        }
+      } catch (err) {
+        console.warn('MenuPedidoEspera falhou, usando fallback:', err);
+      }
+    }
+
+    // Garante abertura visual mesmo se o módulo falhar
+    overlay.classList.add('open');
+    document.body.classList.add('pedido-espera-aberta');
+
+    const title = document.getElementById('pedidoStatusTitulo');
+    const sub = document.getElementById('pedidoStatusSub');
+    const jogos = document.getElementById('pedidoJogosSection');
+    const host = document.getElementById('miniGameHost');
+    const steps = document.getElementById('pedidoSteps');
+
+    if (title && (!title.textContent || title.textContent === 'Acompanhando pedido')) {
+      title.textContent = 'Pedido recebido';
+    }
+    if (sub) {
+      const tipo = pedido.tipo_entrega === 'retirada' ? 'Retirada' : 'Entrega';
+      const total = Number(pedido.total || 0).toFixed(2).replace('.', ',');
+      sub.textContent = `Demo · ${tipo} · R$ ${total}`;
+    }
+    if (jogos) jogos.style.display = 'block';
+    if (steps && !steps.innerHTML.trim()) {
+      const labels = pedido.tipo_entrega === 'retirada'
+        ? ['Recebido', 'Preparando', 'Pronto', 'Entregue']
+        : ['Recebido', 'Preparando', 'A caminho', 'Entregue'];
+      steps.innerHTML = labels.map((lab, i) => {
+        const cls = i === 0 ? 'pedido-step done current' : 'pedido-step';
+        return `<div class="${cls}"><span class="pedido-step-dot"></span><span>${lab}</span></div>`;
+      }).join('');
+    }
+    if (host && !host.innerHTML.trim()) {
+      host.innerHTML = `
+        <div class="mini-lobby">
+          <div class="mini-lobby-title">Sala de jogos</div>
+          <p class="mini-lobby-tip">Os jogos só aparecem depois do Play.</p>
+          <button type="button" class="mini-play-btn" id="miniPlayBtnFallback">▶ Play</button>
+        </div>`;
+      const btn = host.querySelector('#miniPlayBtnFallback');
+      if (btn) {
+        btn.addEventListener('click', () => {
+          if (window.MenuPedidoEspera && typeof window.MenuPedidoEspera.abrirPainel === 'function') {
+            window.MenuPedidoEspera.abrirPainel({ games: true });
+          } else {
+            showToast('Recarregue a página para carregar os jogos');
+          }
+        });
+      }
+    }
+
+    // Sobe o bloco de jogos para a área visível
+    setTimeout(() => {
+      if (jogos) jogos.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 80);
+
+    return overlay.classList.contains('open');
+  }
+
   function copiarPix() {
     navigator.clipboard.writeText(PIX_CHAVE_DEMO).then(() => {
       const btn = document.getElementById('btnCopiarPix');
@@ -6043,20 +6128,18 @@
     if (DEMO_MODE) {
       limparPedidoAposEnvio();
       closeCart();
-      if (window.MenuPedidoEspera) {
-        await window.MenuPedidoEspera.registrarPedidoAtivo({
-          id: 'local-' + Date.now(),
-          status: 'recebido',
-          total: totalFinal,
-          tipo_entrega: retirada ? 'retirada' : 'entrega',
-          cliente_nome: name,
-          created_at: new Date().toISOString(),
-        }, {
-          cliente_nome: name,
-          tipo_entrega: retirada ? 'retirada' : 'entrega',
-        });
+      const pedidoDemo = {
+        id: 'local-' + Date.now(),
+        status: 'recebido',
+        total: totalFinal,
+        tipo_entrega: retirada ? 'retirada' : 'entrega',
+        cliente_nome: name,
+        created_at: new Date().toISOString(),
+      };
+      const aberto = await abrirPainelEsperaDemo(pedidoDemo);
+      if (!aberto) {
+        showAlerta('Não foi possível abrir o painel de espera. Recarregue a página (Ctrl+F5) e tente de novo.', '');
       }
-      showToast('Demo: pedido simulado — jogue enquanto espera!');
       return;
     }
 
@@ -6817,7 +6900,7 @@
       atualizarPainelNotificacoes();
     });
 
-    navigator.serviceWorker.register('sw.js?v=4').then(reg => {
+    navigator.serviceWorker.register('sw.js?v=5').then(reg => {
       try { reg.update(); } catch (e) { /* ignore */ }
     }).catch(() => { /* offline ou file:// */ });
 
