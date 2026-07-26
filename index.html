@@ -6814,7 +6814,7 @@
       atualizarPainelNotificacoes();
     });
 
-    navigator.serviceWorker.register('sw.js?v=3').then(reg => {
+    navigator.serviceWorker.register('sw.js?v=4').then(reg => {
       try { reg.update(); } catch (e) { /* ignore */ }
     }).catch(() => { /* offline ou file:// */ });
 

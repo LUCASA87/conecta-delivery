@@ -1,4 +1,4 @@
-const CACHE_NAME = 'menu-lanches-v3';
+const CACHE_NAME = 'menu-lanches-v4';
 const STATUS_LABEL = {
   recebido: 'Pedido recebido',
   preparando: 'Seu pedido está sendo preparado',
