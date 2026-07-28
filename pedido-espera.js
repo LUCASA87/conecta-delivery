@@ -1746,6 +1746,7 @@
     temAvaliacaoPendente,
     abrirPainel,
     fecharPainel,
+    limparPedidoAtivo: clearLocal,
     getPedido: () => _pedido,
     iniciarWatchLoja,
     onHorarioAf,

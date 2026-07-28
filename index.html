@@ -3971,7 +3971,7 @@
   var p = location.pathname || '/';
   if (/\.html?$/i.test(p)) p = p.replace(/\/[^/]*$/, '/');
   else if (p.charAt(p.length - 1) !== '/') p += '/';
-  document.write('<script src="' + p + 'pedido-espera.js?v=5"><\/script>');
+  document.write('<script src="' + p + 'pedido-espera.js?v=6"><\/script>');
 })();
 </script>
 
@@ -4117,6 +4117,7 @@
     if (abrirSacola && cart.length) openCart();
     if (window.MenuPedidoEspera) {
       setTimeout(() => {
+        if (DEMO_MODE) return; // demo sempre começa limpo — sem reabrir pedido antigo
         if (forcarAvaliar && typeof window.MenuPedidoEspera.lembrarAvaliacao === 'function') {
           window.MenuPedidoEspera.lembrarAvaliacao({ forcar: true });
         } else {
@@ -4138,6 +4139,38 @@
   window.__MENU_SUPA = null;
   const STORAGE_BUCKET = '';
   const DEMO_CLIENTES_KEY = 'menu_demo_clientes';
+
+  /** Cada abertura do site demo começa como um pedido novo (sem rascunho/espera antiga). */
+  function resetDemoParaNovoPedido() {
+    if (!DEMO_MODE) return;
+    try {
+      localStorage.removeItem('menu_pedido_ativo');
+      localStorage.removeItem('menu_pedido_last_notify');
+      localStorage.removeItem('menu_pedido_rascunho');
+    } catch (e) { /* ignore */ }
+    try {
+      sessionStorage.removeItem('menu_pedido_painel_visto');
+      sessionStorage.removeItem('menu_sacola_restaurada');
+      Object.keys(sessionStorage).forEach(k => {
+        if (/^menu_avaliacao_/.test(k)) sessionStorage.removeItem(k);
+      });
+    } catch (e) { /* ignore */ }
+    const overlay = document.getElementById('pedidoEsperaOverlay');
+    if (overlay) overlay.classList.remove('open');
+    document.body.classList.remove('pedido-espera-aberta');
+    document.getElementById('pedidoAtivoChip')?.classList.remove('visible');
+    if (window.MenuPedidoEspera) {
+      try {
+        if (typeof window.MenuPedidoEspera.limparPedidoAtivo === 'function') {
+          window.MenuPedidoEspera.limparPedidoAtivo();
+        } else if (typeof window.MenuPedidoEspera.fecharPainel === 'function') {
+          window.MenuPedidoEspera.fecharPainel();
+        }
+      } catch (e) { /* ignore */ }
+    }
+  }
+
+  resetDemoParaNovoPedido();
 
   function resolveImagemUrl(imagem_url) {
     if (imagem_url == null || String(imagem_url).trim() === '') return null;
@@ -6690,11 +6723,18 @@
       mostrarErroCardapio(e.message || String(e));
       carregarAvaliacoesMenu();
     } finally {
-      updateCartUI();
-      restaurarFormularioPedido();
-      if (cart.length > 0 && !sessionStorage.getItem('menu_sacola_restaurada')) {
-        sessionStorage.setItem('menu_sacola_restaurada', '1');
-        setTimeout(() => showToast('Sacola restaurada — continue seu pedido!'), 600);
+      if (DEMO_MODE) {
+        resetDemoParaNovoPedido();
+        cart = [];
+        updateCartUI();
+        renderCartItems();
+      } else {
+        updateCartUI();
+        restaurarFormularioPedido();
+        if (cart.length > 0 && !sessionStorage.getItem('menu_sacola_restaurada')) {
+          sessionStorage.setItem('menu_sacola_restaurada', '1');
+          setTimeout(() => showToast('Sacola restaurada — continue seu pedido!'), 600);
+        }
       }
       if (!_introComecou) iniciarIntro();
       initScrollSpy();
@@ -6900,7 +6940,7 @@
       atualizarPainelNotificacoes();
     });
 
-    navigator.serviceWorker.register('sw.js?v=5').then(reg => {
+    navigator.serviceWorker.register('sw.js?v=6').then(reg => {
       try { reg.update(); } catch (e) { /* ignore */ }
     }).catch(() => { /* offline ou file:// */ });
 
