@@ -141,33 +141,8 @@
   }
 
   function seedFromPageDefaults() {
-    const base = defaultLegacy();
-    const LEGACY_COMBOS = (window.LEGACY_COMBOS && window.LEGACY_COMBOS.length) ? window.LEGACY_COMBOS : base.combos;
-    const LEGACY_XS = (window.LEGACY_XS && window.LEGACY_XS.length) ? window.LEGACY_XS : base.xs;
-    const LEGACY_CALOTA = (window.LEGACY_CALOTA && window.LEGACY_CALOTA.length) ? window.LEGACY_CALOTA : base.calota;
-    const LEGACY_BURGERS = (window.LEGACY_BURGERS && window.LEGACY_BURGERS.length) ? window.LEGACY_BURGERS : base.burgers;
-    const LEGACY_PORCOES = (window.LEGACY_PORCOES && window.LEGACY_PORCOES.length) ? window.LEGACY_PORCOES : base.porcoes;
-
-    const globalAdics = [
-      { slug: 'batata_xis', descricao: 'Adicional de Batata Frita no Hambúrguer', valor: 7, ativo: true },
-      { slug: 'cheddar_extra', descricao: 'Cheddar extra', valor: 4, ativo: true },
-      { slug: 'bacon_extra', descricao: 'Bacon extra', valor: 5, ativo: true },
-    ];
-
-    const withDefaultAdics = (list, imgFn) => list.map((it, i) => {
-      const mapped = mapFood(it, typeof imgFn === 'function' ? imgFn(it, i) : imgFn, null);
-      // Lanches/combos/burgers começam com os 3 adicionais padrão
-      mapped.adicionais = globalAdics.map(a => ({
-        id: a.slug,
-        descricao: a.descricao,
-        valor: a.valor,
-        ativo: true,
-      }));
-      return mapped;
-    });
-
     return {
-      version: 2,
+      version: 3,
       horario: { af: 'A', inicio: '00:00', fim: '23:59' },
       teleentregaAtiva: true,
       bairros: [
@@ -175,63 +150,45 @@
         { BAIRRO: 'Bairro Exemplo', VALOR: 5, ativo: true },
         { BAIRRO: 'Zona Norte', VALOR: 8, ativo: true },
       ],
-      categorias: DEFAULT_CATS.map(c => ({ ...c })),
-      itens: {
-        combos: withDefaultAdics(LEGACY_COMBOS, (_, i) => 'Combo_' + (i + 1) + '.png'),
-        xs: withDefaultAdics(LEGACY_XS, null),
-        calota: withDefaultAdics(LEGACY_CALOTA, 'calota.jpg'),
-        burgers: withDefaultAdics(LEGACY_BURGERS, 'Hamburger.png'),
-        porcoes: LEGACY_PORCOES.map(f => mapFood(f, 'porcoes.jpg', null)),
-        bebidas: [
-          { id: 'lata_coca', name: 'Coca-Cola Lata', price: 6, desc: 'Lata', ativo: true, img: 'Coca-Cola.png', tipo: 'lata', adicionais: [] },
-          { id: 'lata_guarana', name: 'Guaraná Lata', price: 6, desc: 'Lata', ativo: true, img: 'refrigerante-antarctica-guarana-2l_18875.webp', tipo: 'lata', adicionais: [] },
-          { id: 'lata_pepsi', name: 'Pepsi Lata', price: 6, desc: 'Lata', ativo: true, img: 'Pepsi-2l.jpg', tipo: 'lata', adicionais: [] },
-          { id: 'garrafa_coca', name: 'Coca-Cola', price: 13, desc: '2L', ativo: true, img: 'Coca-Cola.png', tipo: 'garrafa', adicionais: [] },
-          { id: 'garrafa_guarana', name: 'Guaraná 2L', price: 13, desc: '2L', ativo: true, img: 'refrigerante-antarctica-guarana-2l_18875.webp', tipo: 'garrafa', adicionais: [] },
-          { id: 'garrafa_pepsi', name: 'Pepsi 2L', price: 13, desc: '2L', ativo: true, img: 'Pepsi-2l.jpg', tipo: 'garrafa', adicionais: [] },
-        ],
-      },
+      categorias: [],
+      itens: {},
     };
   }
 
   function normalizeCatalog(raw) {
     if (!raw || typeof raw !== 'object') return seedFromPageDefaults();
     const seeded = seedFromPageDefaults();
-    const globalAdics = Array.isArray(raw.adicionais) ? raw.adicionais : [];
 
-    let categorias;
-    if (Array.isArray(raw.categorias)) {
-      categorias = raw.categorias.map(c => ({
-        id: c.id || uid('cat'),
-        label: c.label || 'Categoria',
-        ativo: c.ativo !== false,
-        tipo: c.tipo || 'lanche',
-      }));
-    } else if (raw.categorias && typeof raw.categorias === 'object') {
-      categorias = DEFAULT_CATS.map(def => ({
-        id: def.id,
-        label: (raw.categorias[def.id] && raw.categorias[def.id].label) || def.label,
-        ativo: !(raw.categorias[def.id] && raw.categorias[def.id].ativo === false),
-        tipo: def.tipo,
-      }));
-    } else {
-      categorias = seeded.categorias;
+    // v3+: cardápio começa vazio — remove categorias padrão antigas
+    if (!raw.version || raw.version < 3) {
+      return {
+        ...seeded,
+        horario: raw.horario || seeded.horario,
+        teleentregaAtiva: raw.teleentregaAtiva !== false,
+        bairros: Array.isArray(raw.bairros) ? raw.bairros : seeded.bairros,
+        categorias: [],
+        itens: {},
+      };
     }
+
+    const globalAdics = Array.isArray(raw.adicionais) ? raw.adicionais : [];
+    const categorias = Array.isArray(raw.categorias)
+      ? raw.categorias.map(c => ({
+          id: c.id || uid('cat'),
+          label: c.label || 'Categoria',
+          ativo: c.ativo !== false,
+          tipo: c.tipo || 'lanche',
+        }))
+      : [];
 
     const itens = {};
     categorias.forEach(c => {
-      const list = (raw.itens && raw.itens[c.id]) || (seeded.itens[c.id]) || [];
+      const list = (raw.itens && raw.itens[c.id]) || [];
       itens[c.id] = list.map(it => mapFood(it, it.img, globalAdics));
     });
-    // Mantém itens órfãos de categorias antigas
-    if (raw.itens) {
-      Object.keys(raw.itens).forEach(key => {
-        if (!itens[key]) itens[key] = (raw.itens[key] || []).map(it => mapFood(it, it.img, globalAdics));
-      });
-    }
 
     return {
-      version: 2,
+      version: 3,
       horario: raw.horario || seeded.horario,
       teleentregaAtiva: raw.teleentregaAtiva !== false,
       bairros: Array.isArray(raw.bairros) ? raw.bairros : seeded.bairros,
