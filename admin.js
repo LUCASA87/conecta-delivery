@@ -621,15 +621,6 @@
           <h3>${isNew ? 'Nova categoria' : 'Editar categoria'}</h3>
           <label class="admin-label">Nome da categoria</label>
           <input class="admin-input" id="admCatLabel" value="${esc(cat.label)}" placeholder="Ex: Xis, Combos, Sobremesas">
-          <label class="admin-label">Tipo no menu</label>
-          <select class="admin-input" id="admCatTipo">
-            <option value="lanche" ${cat.tipo === 'lanche' ? 'selected' : ''}>Lanche / Xis</option>
-            <option value="combo" ${cat.tipo === 'combo' ? 'selected' : ''}>Combo</option>
-            <option value="burger" ${cat.tipo === 'burger' ? 'selected' : ''}>Hambúrguer</option>
-            <option value="porcao" ${cat.tipo === 'porcao' ? 'selected' : ''}>Porção</option>
-            <option value="bebida" ${cat.tipo === 'bebida' ? 'selected' : ''}>Bebida</option>
-          </select>
-          <label class="admin-check"><input type="checkbox" id="admCatAtivo" ${cat.ativo !== false ? 'checked' : ''}> Categoria ativa no menu</label>
           <button type="button" class="admin-btn-primary" data-action="salvar-cat">Salvar categoria</button>
           ${!isNew ? `<button type="button" class="admin-btn-danger" data-action="del-cat">Excluir categoria</button>` : ''}
         </section>`;
@@ -855,16 +846,14 @@
     body.querySelector('[data-action="salvar-cat"]')?.addEventListener('click', () => {
       const label = document.getElementById('admCatLabel')?.value?.trim();
       if (!label) { toast('Informe o nome da categoria'); return; }
-      const tipo = document.getElementById('admCatTipo')?.value || 'lanche';
-      const ativo = !!document.getElementById('admCatAtivo')?.checked;
       if (!_nav.catId) {
         const id = uid('cat');
-        _catalog.categorias.push({ id, label, tipo, ativo });
+        _catalog.categorias.push({ id, label, tipo: 'lanche', ativo: true });
         _catalog.itens[id] = [];
         _nav.catId = id;
       } else {
         const c = getCategoria(_nav.catId);
-        if (c) { c.label = label; c.tipo = tipo; c.ativo = ativo; }
+        if (c) { c.label = label; }
       }
       saveCatalog();
       applyToMenu();
