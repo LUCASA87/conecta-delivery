@@ -30,7 +30,10 @@ Ou use "Cadastrar" com qualquer CPF válido — fica só no navegador.
 Diferenças do site real
 -----------------------
 - Badge amarelo "DEMO" no canto
-- Dados do cardápio estão no próprio HTML
+- Botão preto "Admin" (canto inferior esquerdo)
+- Painel do proprietário: senha 1234
+  (horário, teleentrega, categorias, itens, adicionais por item)
+- Dados do cardápio no HTML + localStorage do admin
 - Cadastro de cliente só no localStorage do navegador
 - Botão WhatsApp avisa que é demo (não envia)
 

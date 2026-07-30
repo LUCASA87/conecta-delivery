@@ -532,6 +532,224 @@
   }
   body.intro-aberta .demo-badge,
   body.cpf-gate-aberta .demo-badge { display: none; }
+
+  .admin-fab {
+    position: fixed;
+    bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+    left: 12px;
+    z-index: 230;
+    border: none;
+    border-radius: 999px;
+    padding: 10px 14px;
+    background: #1a1a1a;
+    color: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 0.78rem;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.28);
+    cursor: pointer;
+  }
+  body.intro-aberta .admin-fab,
+  body.cpf-gate-aberta .admin-fab,
+  body.saudacao-aberta .admin-fab,
+  body.admin-aberta .admin-fab,
+  body.pedido-espera-aberta .admin-fab { display: none !important; }
+
+  .admin-gate,
+  .admin-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 10140;
+    background: rgba(10, 6, 4, 0.72);
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+  .admin-gate.open,
+  .admin-overlay.open { display: flex; }
+  .admin-gate-box {
+    width: 100%;
+    max-width: 360px;
+    background: #fff;
+    border-radius: 18px;
+    padding: 1.25rem 1.2rem 1.35rem;
+    text-align: center;
+  }
+  .admin-gate-box h2 {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 800;
+    margin-bottom: 0.35rem;
+  }
+  .admin-gate-box p { font-size: 0.82rem; color: #666; margin-bottom: 0.9rem; }
+  .admin-sheet {
+    width: 100%;
+    max-width: 560px;
+    max-height: min(94dvh, 900px);
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.3);
+  }
+  .admin-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 0.95rem 1rem 0.7rem;
+    border-bottom: 1px solid var(--ifood-border);
+    background: linear-gradient(180deg, #fff8f4 0%, #fff 100%);
+  }
+  .admin-head h2 {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 800;
+  }
+  .admin-head p { font-size: 0.72rem; color: #777; margin-top: 2px; }
+  .admin-close {
+    border: none;
+    background: #f2f2f2;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
+  .admin-tabs {
+    display: flex;
+    gap: 6px;
+    padding: 0.65rem 0.75rem;
+    overflow-x: auto;
+    border-bottom: 1px solid var(--ifood-border);
+    background: #fafafa;
+  }
+  .admin-tab {
+    flex: 0 0 auto;
+    border: 1.5px solid #e5e5e5;
+    background: #fff;
+    border-radius: 999px;
+    padding: 8px 12px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 0.75rem;
+    cursor: pointer;
+    color: #444;
+  }
+  .admin-tab.active {
+    background: #1a1a1a;
+    border-color: #1a1a1a;
+    color: #fff;
+  }
+  .admin-body {
+    flex: 1;
+    overflow: auto;
+    padding: 0.9rem 1rem 1.4rem;
+    -webkit-overflow-scrolling: touch;
+  }
+  .admin-section h3 {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    font-weight: 800;
+    margin-bottom: 0.65rem;
+  }
+  .admin-subh {
+    margin: 1rem 0 0.4rem;
+    font-size: 0.9rem;
+    font-weight: 800;
+  }
+  .admin-hint {
+    font-size: 0.75rem;
+    color: #777;
+    margin-bottom: 0.75rem;
+    line-height: 1.4;
+  }
+  .admin-label {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #555;
+    margin: 0.55rem 0 0.28rem;
+  }
+  .admin-input {
+    width: 100%;
+    border: 1.5px solid #e6e6e6;
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.9rem;
+    background: #fff;
+  }
+  .admin-textarea { resize: vertical; min-height: 72px; }
+  .admin-row2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 0.35rem;
+  }
+  .admin-check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0.55rem 0;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #333;
+  }
+  .admin-btn-primary,
+  .admin-btn-secondary,
+  .admin-btn-danger,
+  .admin-btn-link {
+    width: 100%;
+    margin-top: 0.7rem;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 0.88rem;
+    cursor: pointer;
+  }
+  .admin-btn-primary { background: var(--red); color: #fff; }
+  .admin-btn-secondary { background: #f0f0f0; color: #222; }
+  .admin-btn-danger { background: #ffe8e8; color: #c0392b; }
+  .admin-btn-link {
+    width: auto;
+    background: none;
+    color: #555;
+    padding: 0;
+    margin: 0 0 0.5rem;
+    text-align: left;
+  }
+  .admin-list { display: flex; flex-direction: column; gap: 10px; margin: 0.6rem 0; }
+  .admin-card {
+    border: 1.5px solid #ebebeb;
+    border-radius: 14px;
+    padding: 12px;
+    background: #fff;
+  }
+  .admin-item-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    text-align: left;
+    border: 1.5px solid #ebebeb;
+    border-radius: 14px;
+    padding: 12px 14px;
+    background: #fff;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+  }
+  .admin-item-row strong { display: block; font-size: 0.9rem; }
+  .admin-item-row small { color: #777; font-size: 0.72rem; }
+  .admin-chevron { font-size: 1.2rem; color: #aaa; }
+  .admin-hr { border: none; border-top: 1px solid #eee; margin: 1.1rem 0; }
+  .admin-pin-msg { color: #c0392b; font-size: 0.78rem; font-weight: 700; min-height: 1.1em; margin: 0.4rem 0; }
+
   .cliente-canto small {
     display: block;
     font-size: 0.62rem;
@@ -3433,6 +3651,8 @@
   <div class="demo-badge" title="Vers&#227;o de demonstra&#231;&#227;o">DEMO</div>
 </div>
 
+<button type="button" class="admin-fab" id="btnAdminMenu" title="Painel do propriet&#225;rio">Admin</button>
+
 <div class="store-info-wrap">
   <div class="store-info-card">
     <img class="store-logo" src="Logo.png" alt="Conecta Delivery">
@@ -3965,13 +4185,48 @@
   </div>
 </div>
 
+<!-- PAINEL ADMIN — acesso do proprietário -->
+<div class="admin-gate" id="adminGate" role="dialog" aria-modal="true" aria-labelledby="adminGateTitulo">
+  <div class="admin-gate-box">
+    <h2 id="adminGateTitulo">Painel Admin</h2>
+    <p>Acesso do propriet&#225;rio. Digite a senha para gerenciar o card&#225;pio.</p>
+    <label class="admin-label" for="adminPinInput" style="text-align:left">Senha</label>
+    <input class="admin-input" id="adminPinInput" type="password" inputmode="numeric" maxlength="12" placeholder="Senha" autocomplete="current-password">
+    <p class="admin-pin-msg" id="adminPinMsg" role="status"></p>
+    <button type="button" class="admin-btn-primary" id="adminEntrarBtn">Entrar</button>
+    <button type="button" class="admin-btn-secondary" id="adminGateFechar">Cancelar</button>
+    <p class="admin-hint" style="margin-top:0.8rem">Demo: senha <strong>1234</strong></p>
+  </div>
+</div>
+
+<div class="admin-overlay" id="adminOverlay" role="dialog" aria-modal="true" aria-labelledby="adminTitulo">
+  <div class="admin-sheet">
+    <div class="admin-head">
+      <div>
+        <h2 id="adminTitulo">Painel do propriet&#225;rio</h2>
+        <p>Hor&#225;rio, entrega, categorias, itens e adicionais</p>
+      </div>
+      <button type="button" class="admin-close" id="adminFechar" aria-label="Fechar">&#10005;</button>
+    </div>
+    <div class="admin-tabs" role="tablist">
+      <button type="button" class="admin-tab active" data-tab="loja">Loja</button>
+      <button type="button" class="admin-tab" data-tab="entrega">Entrega</button>
+      <button type="button" class="admin-tab" data-tab="cardapio">Card&#225;pio</button>
+      <button type="button" class="admin-tab" data-tab="adicionais">Adicionais</button>
+      <button type="button" class="admin-tab" data-tab="senha">Senha</button>
+    </div>
+    <div class="admin-body" id="adminBody"></div>
+  </div>
+</div>
+
 <!-- Painel de espera + jogos — path absoluto da pasta (evita 404 no GitHub Pages sem /) -->
 <script>
 (function () {
   var p = location.pathname || '/';
   if (/\.html?$/i.test(p)) p = p.replace(/\/[^/]*$/, '/');
   else if (p.charAt(p.length - 1) !== '/') p += '/';
-  document.write('<script src="' + p + 'pedido-espera.js?v=6"><\/script>');
+  document.write('<script src="' + p + 'pedido-espera.js?v=7"><\/script>');
+  document.write('<script src="' + p + 'admin.js?v=1"><\/script>');
 })();
 </script>
 
@@ -4857,6 +5112,7 @@
   let _lancheUpsellNome = '';
   let _upsellLineId = null;
   let _upsellAdicionaisQty = {};
+  let _upsellAdicionaisPermitidos = null; // null = todos; [] = nenhum; [slugs] = filtro
   let _upsellBebidasQty = {};
   let _comboPendente = null;
 
@@ -5325,9 +5581,10 @@
     const lineId = 'ln_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
     const comboBurgers = buildComboBurgersFromSlots();
     const nomeCombo = _comboPendente.name;
+    const comboId = _comboPendente.id;
     cart.push({
       lineId,
-      id: _comboPendente.id,
+      id: comboId,
       name: nomeCombo,
       price: _comboPendente.price,
       precoBase: _comboPendente.precoBase,
@@ -5346,8 +5603,11 @@
     _upsellLineId = lineId;
     _lancheUpsellNome = nomeCombo;
     _upsellAdicionaisQty = {};
+    _upsellAdicionaisPermitidos = (window.MenuAdmin && typeof window.MenuAdmin.getAdicionaisIdsForItem === 'function')
+      ? window.MenuAdmin.getAdicionaisIdsForItem(comboId)
+      : null;
     _adicionaisCatalogo.forEach(a => { _upsellAdicionaisQty[a.id] = 0; });
-    if (_adicionaisCatalogo.length) {
+    if (adicionaisDisponiveisParaUpsell().length) {
       setTimeout(mostrarUpsellAdicionais, 350);
     } else {
       setTimeout(tentarUpsellBebida, 650);
@@ -5402,8 +5662,11 @@
     _upsellLineId = lineId;
     _lancheUpsellNome = name;
     _upsellAdicionaisQty = {};
+    _upsellAdicionaisPermitidos = (window.MenuAdmin && typeof window.MenuAdmin.getAdicionaisIdsForItem === 'function')
+      ? window.MenuAdmin.getAdicionaisIdsForItem(id)
+      : null;
     _adicionaisCatalogo.forEach(a => { _upsellAdicionaisQty[a.id] = 0; });
-    if (_adicionaisCatalogo.length) {
+    if (adicionaisDisponiveisParaUpsell().length) {
       setTimeout(mostrarUpsellAdicionais, 350);
     } else {
       setTimeout(tentarUpsellBebida, 650);
@@ -5413,7 +5676,12 @@
   function renderUpsellAdicionaisList() {
     const list = document.getElementById('upsellAdicionaisList');
     if (!list) return;
-    list.innerHTML = _adicionaisCatalogo.map(a => {
+    const catalogo = adicionaisDisponiveisParaUpsell();
+    if (!catalogo.length) {
+      list.innerHTML = '<p style="font-size:0.82rem;color:#777;padding:8px 2px">Nenhum adicional disponível para este item.</p>';
+      return;
+    }
+    list.innerHTML = catalogo.map(a => {
       const q = _upsellAdicionaisQty[a.id] || 0;
       return `
       <div class="upsell-item">
@@ -5430,10 +5698,19 @@
     }).join('');
   }
 
+  function adicionaisDisponiveisParaUpsell() {
+    let list = _adicionaisCatalogo || [];
+    const ids = _upsellAdicionaisPermitidos;
+    if (ids == null) return list;
+    if (!ids.length) return [];
+    return list.filter(a => ids.includes(a.slug) || ids.includes(a.id) || ids.includes(String(a.id).replace(/^adic_/, '')));
+  }
+
   function syncAdicionaisNaLinha() {
     const line = cart.find(i => i.lineId === _upsellLineId);
     if (!line) return;
-    line.adicionais = _adicionaisCatalogo
+    const catalogo = adicionaisDisponiveisParaUpsell();
+    line.adicionais = catalogo
       .filter(a => (_upsellAdicionaisQty[a.id] || 0) > 0)
       .map(a => ({
         id: a.id,
@@ -5457,7 +5734,8 @@
     const overlay = document.getElementById('upsellAdicionaisOverlay');
     const titulo = document.getElementById('upsellAdicionaisTitulo');
     const sub = document.getElementById('upsellAdicionaisSub');
-    if (!overlay || !_adicionaisCatalogo.length) {
+    const disponiveis = adicionaisDisponiveisParaUpsell();
+    if (!overlay || !disponiveis.length) {
       setTimeout(tentarUpsellBebida, 400);
       return;
     }
@@ -5482,6 +5760,7 @@
     _lancheUpsellNome = '';
     _upsellLineId = null;
     _upsellAdicionaisQty = {};
+    _upsellAdicionaisPermitidos = null;
     if (continuar) setTimeout(tentarUpsellBebida, 450);
   }
 
@@ -5614,6 +5893,12 @@
     { id:'f3', col:'BATATAFRITAMSIMPLES',  name:'Batata Frita M Simples',  price:25, desc:'' },
     { id:'f4', col:'BATATAFRITAMESPECIAL', name:'Batata Frita M Especial', price:35, desc:'Batata, cheddar, bacon, maionese da casa' },
   ];
+
+  window.LEGACY_COMBOS = LEGACY_COMBOS;
+  window.LEGACY_XS = LEGACY_XS;
+  window.LEGACY_CALOTA = LEGACY_CALOTA;
+  window.LEGACY_BURGERS = LEGACY_BURGERS;
+  window.LEGACY_PORCOES = LEGACY_PORCOES;
 
   function estoqueLigado(estoque, col) {
     if (isOn(estoque[col])) return true;
@@ -6645,6 +6930,20 @@
   // Atualiza toast helper depois que showToast existe
   if (window.__MENU_SUPA) window.__MENU_SUPA.toast = (msg) => showToast(msg);
 
+  // API usada pelo painel admin
+  window.setBurgersCatalogo = setBurgersCatalogo;
+  window.renderCombos = renderCombos;
+  window.renderXs = renderXs;
+  window.renderCalota = renderCalota;
+  window.renderBurgers = renderBurgers;
+  window.renderFritas = renderFritas;
+  window.renderBebidas = renderBebidas;
+  window.renderTeleentrega = renderTeleentrega;
+  window.renderHorario = renderHorario;
+  window.renderAdicionais = renderAdicionais;
+  window.imagemFallbackLanche = imagemFallbackLanche;
+  window.showToast = showToast;
+
   function demoMapItem(item, img) {
     return {
       id: item.id,
@@ -6659,49 +6958,43 @@
 
   async function init() {
     try {
-      // Cardápio 100% local — sem banco
-      const combos = LEGACY_COMBOS.map((c, i) => demoMapItem(c, 'Combo_' + (i + 1) + '.png'));
-      const xs = LEGACY_XS.map(x => demoMapItem(x, null));
-      const calota = LEGACY_CALOTA.map(c => demoMapItem(c, 'calota.jpg'));
-      const burgers = LEGACY_BURGERS.map(b => demoMapItem(b, 'Hamburger.png'));
-      const fritas = LEGACY_PORCOES.map(f => demoMapItem(f, 'porcoes.jpg'));
-
-      setBurgersCatalogo(burgers);
-      renderCombos(combos);
-      renderXs(xs);
-      renderCalota(calota);
-      renderBurgers(burgers);
-      renderFritas(fritas);
-
-      const latas = [
-        { SABOR: 'Coca-Cola Lata', VALOR: 6, ativo: true, imagem_url: 'Coca-Cola.png', ordem: 1 },
-        { SABOR: 'Guaraná Lata', VALOR: 6, ativo: true, imagem_url: 'refrigerante-antarctica-guarana-2l_18875.webp', ordem: 2 },
-        { SABOR: 'Pepsi Lata', VALOR: 6, ativo: true, imagem_url: 'Pepsi-2l.jpg', ordem: 3 },
-      ];
-      const garrafas = [
-        { SABOR: 'Coca-Cola', VALOR: 13, ativo: true, imagem_url: 'Coca-Cola.png', ordem: 1 },
-        { SABOR: 'Guaraná 2L', VALOR: 13, ativo: true, imagem_url: 'refrigerante-antarctica-guarana-2l_18875.webp', ordem: 2 },
-        { SABOR: 'Pepsi 2L', VALOR: 13, ativo: true, imagem_url: 'Pepsi-2l.jpg', ordem: 3 },
-      ];
-      renderBebidas(latas, garrafas);
-
-      const teleentrega = [
-        { BAIRRO: 'Centro', VALOR: 0, ativo: true },
-        { BAIRRO: 'Bairro Exemplo', VALOR: 5, ativo: true },
-        { BAIRRO: 'Zona Norte', VALOR: 8, ativo: true },
-      ];
-      renderTeleentrega(teleentrega, []);
-
-      const agora = new Date();
-      const ini = '00:00';
-      const fim = '23:59';
-      renderHorario([{ 'A/F': 'A', inicio: ini, fim: fim, INICIO: ini, FIM: fim }]);
-
-      renderAdicionais([
-        { slug: 'batata_xis', descricao: 'Adicional de Batata Frita no Hambúrguer', valor: 7, ativo: true },
-        { slug: 'cheddar_extra', descricao: 'Cheddar extra', valor: 4, ativo: true },
-        { slug: 'bacon_extra', descricao: 'Bacon extra', valor: 5, ativo: true },
-      ]);
+      if (window.MenuAdmin) {
+        window.MenuAdmin.boot();
+        window.MenuAdmin.applyToMenu();
+      } else {
+        // Fallback se admin.js não carregou
+        const combos = LEGACY_COMBOS.map((c, i) => demoMapItem(c, 'Combo_' + (i + 1) + '.png'));
+        const xs = LEGACY_XS.map(x => demoMapItem(x, null));
+        const calota = LEGACY_CALOTA.map(c => demoMapItem(c, 'calota.jpg'));
+        const burgers = LEGACY_BURGERS.map(b => demoMapItem(b, 'Hamburger.png'));
+        const fritas = LEGACY_PORCOES.map(f => demoMapItem(f, 'porcoes.jpg'));
+        setBurgersCatalogo(burgers);
+        renderCombos(combos);
+        renderXs(xs);
+        renderCalota(calota);
+        renderBurgers(burgers);
+        renderFritas(fritas);
+        renderBebidas([
+          { SABOR: 'Coca-Cola Lata', VALOR: 6, ativo: true, imagem_url: 'Coca-Cola.png', ordem: 1 },
+          { SABOR: 'Guaraná Lata', VALOR: 6, ativo: true, imagem_url: 'refrigerante-antarctica-guarana-2l_18875.webp', ordem: 2 },
+          { SABOR: 'Pepsi Lata', VALOR: 6, ativo: true, imagem_url: 'Pepsi-2l.jpg', ordem: 3 },
+        ], [
+          { SABOR: 'Coca-Cola', VALOR: 13, ativo: true, imagem_url: 'Coca-Cola.png', ordem: 1 },
+          { SABOR: 'Guaraná 2L', VALOR: 13, ativo: true, imagem_url: 'refrigerante-antarctica-guarana-2l_18875.webp', ordem: 2 },
+          { SABOR: 'Pepsi 2L', VALOR: 13, ativo: true, imagem_url: 'Pepsi-2l.jpg', ordem: 3 },
+        ]);
+        renderTeleentrega([
+          { BAIRRO: 'Centro', VALOR: 0, ativo: true },
+          { BAIRRO: 'Bairro Exemplo', VALOR: 5, ativo: true },
+          { BAIRRO: 'Zona Norte', VALOR: 8, ativo: true },
+        ], []);
+        renderHorario([{ 'A/F': 'A', inicio: '00:00', fim: '23:59', INICIO: '00:00', FIM: '23:59' }]);
+        renderAdicionais([
+          { slug: 'batata_xis', descricao: 'Adicional de Batata Frita no Hambúrguer', valor: 7, ativo: true },
+          { slug: 'cheddar_extra', descricao: 'Cheddar extra', valor: 4, ativo: true },
+          { slug: 'bacon_extra', descricao: 'Bacon extra', valor: 5, ativo: true },
+        ]);
+      }
 
       // Cliente de exemplo para a demo (CPF válido de teste)
       if (!demoClientesLoad().length) {
@@ -6940,7 +7233,7 @@
       atualizarPainelNotificacoes();
     });
 
-    navigator.serviceWorker.register('sw.js?v=6').then(reg => {
+    navigator.serviceWorker.register('sw.js?v=7').then(reg => {
       try { reg.update(); } catch (e) { /* ignore */ }
     }).catch(() => { /* offline ou file:// */ });
 
