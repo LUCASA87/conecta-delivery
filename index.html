@@ -548,207 +548,14 @@
     font-size: 0.78rem;
     box-shadow: 0 6px 18px rgba(0,0,0,0.28);
     cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
   }
   body.intro-aberta .admin-fab,
   body.cpf-gate-aberta .admin-fab,
   body.saudacao-aberta .admin-fab,
-  body.admin-aberta .admin-fab,
   body.pedido-espera-aberta .admin-fab { display: none !important; }
-
-  .admin-gate,
-  .admin-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    z-index: 10140;
-    background: rgba(10, 6, 4, 0.72);
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-  }
-  .admin-gate.open,
-  .admin-overlay.open { display: flex; }
-  .admin-gate-box {
-    width: 100%;
-    max-width: 360px;
-    background: #fff;
-    border-radius: 18px;
-    padding: 1.25rem 1.2rem 1.35rem;
-    text-align: center;
-  }
-  .admin-gate-box h2 {
-    font-family: 'Nunito', sans-serif;
-    font-size: 1.2rem;
-    font-weight: 800;
-    margin-bottom: 0.35rem;
-  }
-  .admin-gate-box p { font-size: 0.82rem; color: #666; margin-bottom: 0.9rem; }
-  .admin-sheet {
-    width: 100%;
-    max-width: 560px;
-    max-height: min(94dvh, 900px);
-    background: #fff;
-    border-radius: 20px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 16px 48px rgba(0,0,0,0.3);
-  }
-  .admin-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    padding: 0.95rem 1rem 0.7rem;
-    border-bottom: 1px solid var(--ifood-border);
-    background: linear-gradient(180deg, #fff8f4 0%, #fff 100%);
-  }
-  .admin-head h2 {
-    font-family: 'Nunito', sans-serif;
-    font-size: 1.1rem;
-    font-weight: 800;
-  }
-  .admin-head p { font-size: 0.72rem; color: #777; margin-top: 2px; }
-  .admin-close {
-    border: none;
-    background: #f2f2f2;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    font-size: 1.2rem;
-    cursor: pointer;
-  }
-  .admin-tabs {
-    display: flex;
-    gap: 6px;
-    padding: 0.65rem 0.75rem;
-    overflow-x: auto;
-    border-bottom: 1px solid var(--ifood-border);
-    background: #fafafa;
-  }
-  .admin-tab {
-    flex: 0 0 auto;
-    border: 1.5px solid #e5e5e5;
-    background: #fff;
-    border-radius: 999px;
-    padding: 8px 12px;
-    font-family: 'Nunito', sans-serif;
-    font-weight: 800;
-    font-size: 0.75rem;
-    cursor: pointer;
-    color: #444;
-  }
-  .admin-tab.active {
-    background: #1a1a1a;
-    border-color: #1a1a1a;
-    color: #fff;
-  }
-  .admin-body {
-    flex: 1;
-    overflow: auto;
-    padding: 0.9rem 1rem 1.4rem;
-    -webkit-overflow-scrolling: touch;
-  }
-  .admin-section h3 {
-    font-family: 'Nunito', sans-serif;
-    font-size: 1rem;
-    font-weight: 800;
-    margin-bottom: 0.65rem;
-  }
-  .admin-subh {
-    margin: 1rem 0 0.4rem;
-    font-size: 0.9rem;
-    font-weight: 800;
-  }
-  .admin-hint {
-    font-size: 0.75rem;
-    color: #777;
-    margin-bottom: 0.75rem;
-    line-height: 1.4;
-  }
-  .admin-label {
-    display: block;
-    font-size: 0.72rem;
-    font-weight: 800;
-    color: #555;
-    margin: 0.55rem 0 0.28rem;
-  }
-  .admin-input {
-    width: 100%;
-    border: 1.5px solid #e6e6e6;
-    border-radius: 12px;
-    padding: 10px 12px;
-    font-family: 'Nunito', sans-serif;
-    font-size: 0.9rem;
-    background: #fff;
-  }
-  .admin-textarea { resize: vertical; min-height: 72px; }
-  .admin-row2 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-top: 0.35rem;
-  }
-  .admin-check {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin: 0.55rem 0;
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: #333;
-  }
-  .admin-btn-primary,
-  .admin-btn-secondary,
-  .admin-btn-danger,
-  .admin-btn-link {
-    width: 100%;
-    margin-top: 0.7rem;
-    border: none;
-    border-radius: 12px;
-    padding: 12px 14px;
-    font-family: 'Nunito', sans-serif;
-    font-weight: 800;
-    font-size: 0.88rem;
-    cursor: pointer;
-  }
-  .admin-btn-primary { background: var(--red); color: #fff; }
-  .admin-btn-secondary { background: #f0f0f0; color: #222; }
-  .admin-btn-danger { background: #ffe8e8; color: #c0392b; }
-  .admin-btn-link {
-    width: auto;
-    background: none;
-    color: #555;
-    padding: 0;
-    margin: 0 0 0.5rem;
-    text-align: left;
-  }
-  .admin-list { display: flex; flex-direction: column; gap: 10px; margin: 0.6rem 0; }
-  .admin-card {
-    border: 1.5px solid #ebebeb;
-    border-radius: 14px;
-    padding: 12px;
-    background: #fff;
-  }
-  .admin-item-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    width: 100%;
-    text-align: left;
-    border: 1.5px solid #ebebeb;
-    border-radius: 14px;
-    padding: 12px 14px;
-    background: #fff;
-    cursor: pointer;
-    font-family: 'Nunito', sans-serif;
-  }
-  .admin-item-row strong { display: block; font-size: 0.9rem; }
-  .admin-item-row small { color: #777; font-size: 0.72rem; }
-  .admin-chevron { font-size: 1.2rem; color: #aaa; }
-  .admin-hr { border: none; border-top: 1px solid #eee; margin: 1.1rem 0; }
-  .admin-pin-msg { color: #c0392b; font-size: 0.78rem; font-weight: 700; min-height: 1.1em; margin: 0.4rem 0; }
 
   .cliente-canto small {
     display: block;
@@ -3651,7 +3458,7 @@
   <div class="demo-badge" title="Vers&#227;o de demonstra&#231;&#227;o">DEMO</div>
 </div>
 
-<button type="button" class="admin-fab" id="btnAdminMenu" title="Painel do propriet&#225;rio">Admin</button>
+<a class="admin-fab" id="btnAdminMenu" href="admin.html" title="Painel do propriet&#225;rio">Admin</a>
 
 <div class="store-info-wrap">
   <div class="store-info-card">
@@ -4185,48 +3992,14 @@
   </div>
 </div>
 
-<!-- PAINEL ADMIN — acesso do proprietário -->
-<div class="admin-gate" id="adminGate" role="dialog" aria-modal="true" aria-labelledby="adminGateTitulo">
-  <div class="admin-gate-box">
-    <h2 id="adminGateTitulo">Painel Admin</h2>
-    <p>Acesso do propriet&#225;rio. Digite a senha para gerenciar o card&#225;pio.</p>
-    <label class="admin-label" for="adminPinInput" style="text-align:left">Senha</label>
-    <input class="admin-input" id="adminPinInput" type="password" inputmode="numeric" maxlength="12" placeholder="Senha" autocomplete="current-password">
-    <p class="admin-pin-msg" id="adminPinMsg" role="status"></p>
-    <button type="button" class="admin-btn-primary" id="adminEntrarBtn">Entrar</button>
-    <button type="button" class="admin-btn-secondary" id="adminGateFechar">Cancelar</button>
-    <p class="admin-hint" style="margin-top:0.8rem">Demo: senha <strong>1234</strong></p>
-  </div>
-</div>
-
-<div class="admin-overlay" id="adminOverlay" role="dialog" aria-modal="true" aria-labelledby="adminTitulo">
-  <div class="admin-sheet">
-    <div class="admin-head">
-      <div>
-        <h2 id="adminTitulo">Painel do propriet&#225;rio</h2>
-        <p>Hor&#225;rio, entrega, categorias, itens e adicionais</p>
-      </div>
-      <button type="button" class="admin-close" id="adminFechar" aria-label="Fechar">&#10005;</button>
-    </div>
-    <div class="admin-tabs" role="tablist">
-      <button type="button" class="admin-tab active" data-tab="loja">Loja</button>
-      <button type="button" class="admin-tab" data-tab="entrega">Entrega</button>
-      <button type="button" class="admin-tab" data-tab="cardapio">Card&#225;pio</button>
-      <button type="button" class="admin-tab" data-tab="adicionais">Adicionais</button>
-      <button type="button" class="admin-tab" data-tab="senha">Senha</button>
-    </div>
-    <div class="admin-body" id="adminBody"></div>
-  </div>
-</div>
-
-<!-- Painel de espera + jogos — path absoluto da pasta (evita 404 no GitHub Pages sem /) -->
+<!-- Painel de espera + jogos + catálogo admin — path absoluto da pasta -->
 <script>
 (function () {
   var p = location.pathname || '/';
   if (/\.html?$/i.test(p)) p = p.replace(/\/[^/]*$/, '/');
   else if (p.charAt(p.length - 1) !== '/') p += '/';
   document.write('<script src="' + p + 'pedido-espera.js?v=7"><\/script>');
-  document.write('<script src="' + p + 'admin.js?v=1"><\/script>');
+  document.write('<script src="' + p + 'admin.js?v=2"><\/script>');
 })();
 </script>
 
@@ -6960,7 +6733,6 @@
     try {
       if (window.MenuAdmin) {
         window.MenuAdmin.boot();
-        window.MenuAdmin.applyToMenu();
       } else {
         // Fallback se admin.js não carregou
         const combos = LEGACY_COMBOS.map((c, i) => demoMapItem(c, 'Combo_' + (i + 1) + '.png'));
@@ -7233,7 +7005,7 @@
       atualizarPainelNotificacoes();
     });
 
-    navigator.serviceWorker.register('sw.js?v=7').then(reg => {
+    navigator.serviceWorker.register('sw.js?v=8').then(reg => {
       try { reg.update(); } catch (e) { /* ignore */ }
     }).catch(() => { /* offline ou file:// */ });
 

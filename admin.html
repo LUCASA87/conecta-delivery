@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1a1a1a">
+<title>Admin — Conecta Delivery</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --red: #EA1D2C;
+    --bg: #f4f4f5;
+    --card: #fff;
+    --border: #ebebeb;
+    --text: #1a1a1a;
+    --muted: #717171;
+  }
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100dvh;
+  }
+  body.admin-locked { overflow: hidden; }
+
+  .admin-login {
+    min-height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.25rem;
+    background:
+      radial-gradient(circle at top, #2a2a2a 0%, #111 55%),
+      #111;
+  }
+  .admin-login.hidden { display: none; }
+  .admin-login-box {
+    width: 100%;
+    max-width: 380px;
+    background: #fff;
+    border-radius: 20px;
+    padding: 1.5rem 1.25rem 1.4rem;
+    text-align: center;
+    box-shadow: 0 18px 50px rgba(0,0,0,0.35);
+  }
+  .admin-login-box img {
+    width: 72px;
+    height: 72px;
+    object-fit: contain;
+    margin-bottom: 0.6rem;
+  }
+  .admin-login-box h1 {
+    font-size: 1.25rem;
+    font-weight: 800;
+    margin-bottom: 0.3rem;
+  }
+  .admin-login-box .sub {
+    font-size: 0.84rem;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+
+  .admin-app { display: none; min-height: 100dvh; }
+  .admin-app.open { display: flex; flex-direction: column; }
+
+  .admin-top {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    padding: 0.85rem 1rem 0.55rem;
+  }
+  .admin-top-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 0.65rem;
+  }
+  .admin-top h1 {
+    font-size: 1.1rem;
+    font-weight: 800;
+  }
+  .admin-top p {
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+  .admin-top-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .admin-link-btn,
+  .admin-out-btn {
+    border: none;
+    border-radius: 999px;
+    padding: 8px 12px;
+    font-family: inherit;
+    font-weight: 800;
+    font-size: 0.75rem;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+  }
+  .admin-link-btn { background: #111; color: #fff; }
+  .admin-out-btn { background: #f0f0f0; color: #333; }
+
+  .admin-tabs {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 0.35rem;
+  }
+  .admin-tab {
+    flex: 0 0 auto;
+    border: 1.5px solid #e5e5e5;
+    background: #fff;
+    border-radius: 999px;
+    padding: 8px 12px;
+    font-family: inherit;
+    font-weight: 800;
+    font-size: 0.75rem;
+    cursor: pointer;
+    color: #444;
+  }
+  .admin-tab.active {
+    background: #111;
+    border-color: #111;
+    color: #fff;
+  }
+
+  .admin-body {
+    flex: 1;
+    padding: 1rem;
+    max-width: 720px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .admin-section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+  .admin-section h3 {
+    font-size: 1rem;
+    font-weight: 800;
+    margin-bottom: 0.65rem;
+  }
+  .admin-subh {
+    margin: 1rem 0 0.4rem;
+    font-size: 0.9rem;
+    font-weight: 800;
+  }
+  .admin-hint {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+    line-height: 1.4;
+  }
+  .admin-label {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #555;
+    margin: 0.55rem 0 0.28rem;
+    text-align: left;
+  }
+  .admin-input {
+    width: 100%;
+    border: 1.5px solid #e6e6e6;
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    background: #fff;
+  }
+  .admin-textarea { resize: vertical; min-height: 72px; }
+  .admin-row2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 0.35rem;
+  }
+  .admin-check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0.55rem 0;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #333;
+  }
+  .admin-btn-primary,
+  .admin-btn-secondary,
+  .admin-btn-danger,
+  .admin-btn-link {
+    width: 100%;
+    margin-top: 0.7rem;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-family: inherit;
+    font-weight: 800;
+    font-size: 0.88rem;
+    cursor: pointer;
+  }
+  .admin-btn-primary { background: var(--red); color: #fff; }
+  .admin-btn-secondary { background: #f0f0f0; color: #222; }
+  .admin-btn-danger { background: #ffe8e8; color: #c0392b; }
+  .admin-btn-link {
+    width: auto;
+    background: none;
+    color: #555;
+    padding: 0;
+    margin: 0 0 0.5rem;
+    text-align: left;
+  }
+  .admin-list { display: flex; flex-direction: column; gap: 10px; margin: 0.6rem 0; }
+  .admin-card {
+    border: 1.5px solid #ebebeb;
+    border-radius: 14px;
+    padding: 12px;
+    background: #fff;
+  }
+  .admin-item-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    text-align: left;
+    border: 1.5px solid #ebebeb;
+    border-radius: 14px;
+    padding: 12px 14px;
+    background: #fff;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .admin-item-row strong { display: block; font-size: 0.9rem; }
+  .admin-item-row small { color: #777; font-size: 0.72rem; }
+  .admin-chevron { font-size: 1.2rem; color: #aaa; }
+  .admin-hr { border: none; border-top: 1px solid #eee; margin: 1.1rem 0; }
+  .admin-pin-msg {
+    color: #c0392b;
+    font-size: 0.78rem;
+    font-weight: 700;
+    min-height: 1.1em;
+    margin: 0.4rem 0;
+  }
+
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    transform: translateX(-50%) translateY(20px);
+    background: #1a1a1a;
+    color: #fff;
+    padding: 10px 16px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.82rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.25s ease;
+    z-index: 50;
+    white-space: nowrap;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  @media (min-width: 720px) {
+    .admin-top { padding-left: 1.25rem; padding-right: 1.25rem; }
+    .admin-body { padding: 1.25rem; }
+  }
+</style>
+</head>
+<body data-admin-page="1">
+
+<div class="admin-login" id="adminGate">
+  <div class="admin-login-box">
+    <img src="Logo.png" alt="Conecta Delivery">
+    <h1>Painel Admin</h1>
+    <p class="sub">Acesso do propriet&#225;rio para gerenciar o card&#225;pio.</p>
+    <label class="admin-label" for="adminPinInput">Senha</label>
+    <input class="admin-input" id="adminPinInput" type="password" inputmode="numeric" maxlength="12" placeholder="Senha" autocomplete="current-password">
+    <p class="admin-pin-msg" id="adminPinMsg" role="status"></p>
+    <button type="button" class="admin-btn-primary" id="adminEntrarBtn">Entrar</button>
+    <a class="admin-btn-secondary" href="index.html" style="display:block;text-align:center;text-decoration:none;line-height:1.2;padding-top:12px;padding-bottom:12px">Voltar ao menu</a>
+    <p class="admin-hint" style="margin-top:0.9rem">Demo: senha <strong>1234</strong></p>
+  </div>
+</div>
+
+<div class="admin-app" id="adminApp">
+  <header class="admin-top">
+    <div class="admin-top-row">
+      <div>
+        <h1>Painel do propriet&#225;rio</h1>
+        <p>Hor&#225;rio, entrega, categorias, itens e adicionais</p>
+      </div>
+      <div class="admin-top-actions">
+        <a class="admin-link-btn" href="index.html" target="_blank" rel="noopener">Ver menu</a>
+        <button type="button" class="admin-out-btn" id="adminSairBtn">Sair</button>
+      </div>
+    </div>
+    <div class="admin-tabs" role="tablist">
+      <button type="button" class="admin-tab active" data-tab="loja">Loja</button>
+      <button type="button" class="admin-tab" data-tab="entrega">Entrega</button>
+      <button type="button" class="admin-tab" data-tab="cardapio">Card&#225;pio</button>
+      <button type="button" class="admin-tab" data-tab="adicionais">Adicionais</button>
+      <button type="button" class="admin-tab" data-tab="senha">Senha</button>
+    </div>
+  </header>
+  <main class="admin-body" id="adminBody"></main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="admin.js?v=2"></script>
+<script>
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    if (!t) return;
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  }
+  window.showToast = showToast;
+  if (window.MenuAdmin) window.MenuAdmin.bootPage();
+</script>
+</body>
+</html>

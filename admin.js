@@ -3,12 +3,14 @@
   const STORAGE_KEY = 'menu_demo_admin_catalog';
   const PIN_DEFAULT = '1234';
   const PIN_KEY = 'menu_demo_admin_pin';
+  const AUTH_SESSION_KEY = 'menu_demo_admin_ok';
 
   let _catalog = null;
   let _tab = 'loja';
   let _catKey = 'xs';
   let _editItemId = null;
   let _authed = false;
+  const IS_ADMIN_PAGE = document.body?.dataset?.adminPage === '1';
 
   const CAT_META = [
     { key: 'combos', label: 'Combos', tab: 'combos' },
@@ -39,12 +41,71 @@
     try { localStorage.setItem(PIN_KEY, String(pin || PIN_DEFAULT)); } catch (e) { /* ignore */ }
   }
 
+  function defaultLegacy() {
+    return {
+      combos: [
+        { id:'c1', name:'Combo 1', price:55, desc:'Bacon, cheddar, batata frita P, 2 burguer burguer, 1 maionese' },
+        { id:'c2', name:'Combo 2', price:50, desc:'Calabresa, cheddar, batata frita P, 2 burguer burguer, 1 maionese da casa' },
+        { id:'c3', name:'Combo 3', price:55, desc:'6 salgados fritos, 6 anéis de cebola, batata frita, 2 burguer burguer, 1 maionese da casa' },
+        { id:'c4', name:'Combo 4', price:80, desc:'Calabresa, 6 anéis de cebola, batata frita P, 3 burguer burguer, 2 maioneses da casa' },
+        { id:'c5', name:'Combo 5', price:105, desc:'12 salgados fritos, 8 anéis de cebola, calabresa, batata frita P, 4 burguer burguer, 2 maioneses da casa' },
+        { id:'c6', name:'Combo 6', price:105, desc:'8 anéis de cebola, calabresa, batata frita M, 4 burguer burguer, 2 maioneses da casa' },
+        { id:'c7', name:'Combo 7', price:70, desc:'Bacon, cheddar, batata frita P, 2 xis salada, 2 maioneses da casa' },
+        { id:'c8', name:'Combo 8', price:85, desc:'Calabresa, cheddar, 6 anéis de cebola, batata frita P, 3 xis salada, 2 maioneses da casa' },
+        { id:'c9', name:'Combo 9', price:75, desc:'6 salgados fritos, bacon, cheddar, batata frita P, 3 cachorros quentes abertos, 1 maionese da casa' },
+        { id:'c10', name:'Combo 10', price:90, desc:'Xis calota salada, batata frita P, 1 maionese da casa, 1 refrigerante 2 litros' },
+        { id:'c11', name:'Combo 11', price:50, desc:'Calabresa acebolada, 15 anéis de cebola, batata frita P, 1 maionese da casa, farofa temperada' },
+        { id:'c12', name:'Combo 12', price:105, desc:'Salgados fritos, anéis de cebola, polenta frita, pepino, ovo de codorna, batata frita, cheddar, catupiry, 2 maioneses caseiras, frango, carne, calabresa' },
+      ],
+      xs: [
+        { id:'x1', name:'X Dog', price:20, desc:'Pão big, maionese caseira, salcicha, molho, ketchup, mostarda, batata palha, milho, ervilha, tomate, alface' },
+        { id:'x2', name:'Torrada (Gado/Frango/Calabresa)', price:20, desc:'Carne a escolha do cliente, maionese da casa, queijo, ovo' },
+        { id:'x3', name:'X Salada', price:23, desc:'Pão big, maionese da casa, bife artesanal, ovo, queijo, milho, ervilha, tomate, alface' },
+        { id:'x4', name:'X Frango', price:23, desc:'Pão big, maionese da casa, frango, ovo, queijo, milho, ervilha, tomate, alface' },
+        { id:'x5', name:'X Calabresa', price:27, desc:'Pão big, maionese da casa, calabresa fatiada, bife bovino, ovo, queijo, milho, ervilha, tomate, alface' },
+        { id:'x6', name:'X Bacon', price:29, desc:'Pão big, maionese da casa, bacon em cubos, bife bovino, ovo, queijo, milho, ervilha, tomate, alface' },
+        { id:'x7', name:'X Coração', price:30, desc:'Pão big, maionese da casa, coração, bife bovino, ovo, queijo, milho, ervilha, tomate, alface' },
+        { id:'x8', name:'X Frango a Moda', price:28, desc:'Pão big, maionese da casa, frango, cebola, mostarda, catupiry, ovo, queijo, milho, ervilha, tomate, alface' },
+        { id:'x9', name:'X Entreveiro', price:31, desc:'Pão big, maionese da casa, bife bovino, calabresa, frango, pimentão, cebola, molho barbecue, ovo, queijo, milho, ervilha, tomate, alface' },
+        { id:'x10', name:'X Moda', price:31, desc:'Pão big, maionese da casa, bife bovino, bacon, calabresa, frango, ovo, queijo, milho, ervilha, tomate, alface' },
+        { id:'x11', name:'X Gladiador', price:31, desc:'Pão big, maionese da casa, bife bovino, bacon, calabresa, batata frita, ovo, queijo, milho, ervilha, tomate, alface' },
+        { id:'x12', name:'Cachorro Quente Aberto', price:17, desc:'Pão 24cm, maionese caseira, 2 salsichas, molho, ketchup, mostarda, batata palha, milho, ervilha, tomate, alface' },
+      ],
+      calota: [
+        { id:'cal1', name:'Calota Salada', price:67, desc:'Xis calota no sabor salada' },
+        { id:'cal2', name:'Calota Frango', price:67, desc:'Xis calota no sabor frango' },
+        { id:'cal3', name:'Calota Calabresa', price:75, desc:'Xis calota no sabor calabresa' },
+        { id:'cal4', name:'Calota Frango a Moda', price:75, desc:'Xis calota no sabor frango a moda' },
+        { id:'cal5', name:'Calota Entreveiro', price:80, desc:'Xis calota no sabor entreveiro' },
+        { id:'cal6', name:'Calota Moda', price:80, desc:'Xis calota no sabor moda' },
+        { id:'cal7', name:'Calota Gladiador', price:80, desc:'Xis calota no sabor gladiador' },
+      ],
+      burgers: [
+        { id:'b1', name:'Burguer Burguer', price:18, desc:'Pão brioche, hambúrguer bovino, tomate, alface, queijo, cebola roxa, maionese cheddar, ketchup' },
+        { id:'b2', name:'Bacon Burguer', price:22, desc:'Pão brioche, hambúrguer bovino, bacon, anéis de cebola empanado, queijo, maionese cheddar, alface, tomate, ketchup' },
+        { id:'b3', name:'Imperial Burguer', price:22, desc:'Pão brioche, hambúrguer bovino, bacon, abacaxi, mel, queijo, maionese da casa, alface, tomate' },
+        { id:'b4', name:'Costela Burguer', price:25, desc:'Pão brioche, hambúrguer bovino, costela desfiada, cebola, barbecue, pepino, queijo, maionese da casa, alface, tomate' },
+        { id:'b5', name:'Frango Burguer', price:25, desc:'Pão brioche, frango frito, bacon, pepino, queijo, molho tare, maionese da casa, alface, tomate' },
+        { id:'b6', name:'Gaúcho Burguer', price:22, desc:'Pão brioche, hambúrguer bovino, ovo, queijo, pimentão e cebola grelhados, barbecue, maionese da casa, alface, tomate' },
+        { id:'b7', name:'Catupiry Burguer', price:25, desc:'Pão brioche, hambúrguer bovino, disco de catupiry empanado frito, bacon, queijo, maionese da casa, alface, tomate' },
+        { id:'b8', name:'Duplo Burguer', price:28, desc:'Pão brioche, 2 hambúrgueres bovinos, queijo mussarela empanado frito, maionese da casa, alface, tomate, ketchup' },
+      ],
+      porcoes: [
+        { id:'f1', name:'Batata Frita P Simples', price:15, desc:'' },
+        { id:'f2', name:'Batata Frita P Especial', price:25, desc:'Batata, cheddar, bacon, maionese da casa' },
+        { id:'f3', name:'Batata Frita M Simples', price:25, desc:'' },
+        { id:'f4', name:'Batata Frita M Especial', price:35, desc:'Batata, cheddar, bacon, maionese da casa' },
+      ],
+    };
+  }
+
   function seedFromPageDefaults() {
-    const LEGACY_COMBOS = window.LEGACY_COMBOS || [];
-    const LEGACY_XS = window.LEGACY_XS || [];
-    const LEGACY_CALOTA = window.LEGACY_CALOTA || [];
-    const LEGACY_BURGERS = window.LEGACY_BURGERS || [];
-    const LEGACY_PORCOES = window.LEGACY_PORCOES || [];
+    const base = defaultLegacy();
+    const LEGACY_COMBOS = (window.LEGACY_COMBOS && window.LEGACY_COMBOS.length) ? window.LEGACY_COMBOS : base.combos;
+    const LEGACY_XS = (window.LEGACY_XS && window.LEGACY_XS.length) ? window.LEGACY_XS : base.xs;
+    const LEGACY_CALOTA = (window.LEGACY_CALOTA && window.LEGACY_CALOTA.length) ? window.LEGACY_CALOTA : base.calota;
+    const LEGACY_BURGERS = (window.LEGACY_BURGERS && window.LEGACY_BURGERS.length) ? window.LEGACY_BURGERS : base.burgers;
+    const LEGACY_PORCOES = (window.LEGACY_PORCOES && window.LEGACY_PORCOES.length) ? window.LEGACY_PORCOES : base.porcoes;
 
     const mapFood = (item, img) => ({
       id: item.id,
@@ -53,7 +114,7 @@
       desc: item.desc || '',
       ativo: true,
       img: img || null,
-      adicionaisIds: null, // null = todos os adicionais ativos
+      adicionaisIds: null,
     });
 
     return {
@@ -224,26 +285,35 @@
     });
   }
 
-  /* ───── UI Auth ───── */
-  function abrirGate() {
-    const gate = document.getElementById('adminGate');
-    if (!gate) return;
-    gate.classList.add('open');
-    document.body.classList.add('admin-aberta');
+  /* ───── UI Auth (página admin.html) ───── */
+  function isSessionAuthed() {
+    try { return sessionStorage.getItem(AUTH_SESSION_KEY) === '1'; } catch (e) { return false; }
+  }
+
+  function setSessionAuthed(on) {
+    try {
+      if (on) sessionStorage.setItem(AUTH_SESSION_KEY, '1');
+      else sessionStorage.removeItem(AUTH_SESSION_KEY);
+    } catch (e) { /* ignore */ }
+    _authed = !!on;
+  }
+
+  function showLogin() {
+    document.getElementById('adminGate')?.classList.remove('hidden');
+    document.getElementById('adminApp')?.classList.remove('open');
+    document.body.classList.add('admin-locked');
     const input = document.getElementById('adminPinInput');
     const msg = document.getElementById('adminPinMsg');
     if (msg) msg.textContent = '';
-    if (input) {
-      input.value = '';
-      setTimeout(() => input.focus(), 50);
-    }
+    if (input) setTimeout(() => input.focus(), 40);
   }
 
-  function fecharGate() {
-    document.getElementById('adminGate')?.classList.remove('open');
-    if (!document.getElementById('adminOverlay')?.classList.contains('open')) {
-      document.body.classList.remove('admin-aberta');
-    }
+  function showApp() {
+    document.getElementById('adminGate')?.classList.add('hidden');
+    document.getElementById('adminApp')?.classList.add('open');
+    document.body.classList.remove('admin-locked');
+    loadCatalog();
+    renderAdminUI();
   }
 
   function tentarEntrarAdmin() {
@@ -254,34 +324,23 @@
       if (msg) msg.textContent = 'Senha incorreta';
       return;
     }
-    _authed = true;
-    fecharGate();
-    abrirPainel();
+    setSessionAuthed(true);
+    showApp();
   }
 
-  function abrirPainel() {
-    if (!_authed) {
-      abrirGate();
-      return;
-    }
-    loadCatalog();
-    const overlay = document.getElementById('adminOverlay');
-    if (!overlay) return;
-    overlay.classList.add('open');
-    document.body.classList.add('admin-aberta');
-    renderAdminUI();
-  }
-
-  function fecharPainel() {
-    document.getElementById('adminOverlay')?.classList.remove('open');
-    document.getElementById('adminGate')?.classList.remove('open');
-    document.body.classList.remove('admin-aberta');
+  function sairAdmin() {
+    setSessionAuthed(false);
+    showLogin();
   }
 
   function setTab(tab) {
     _tab = tab;
     _editItemId = null;
     renderAdminUI();
+  }
+
+  function afterSaveToast(msg) {
+    toast(IS_ADMIN_PAGE ? (msg + ' · abra o menu para ver') : msg);
   }
 
   /* ───── Render admin ───── */
@@ -488,7 +547,7 @@
       _catalog.teleentregaAtiva = !!document.getElementById('admTele')?.checked;
       saveCatalog();
       applyToMenu();
-      toast('Loja atualizada');
+      afterSaveToast('Loja atualizada');
     });
 
     body.querySelector('[data-action="salvar-categorias"]')?.addEventListener('click', () => {
@@ -502,7 +561,7 @@
       });
       saveCatalog();
       applyToMenu();
-      toast('Categorias atualizadas');
+      afterSaveToast('Categorias atualizadas');
     });
 
     body.querySelector('[data-action="add-bairro"]')?.addEventListener('click', () => {
@@ -520,7 +579,7 @@
       }));
       saveCatalog();
       applyToMenu();
-      toast('Entrega atualizada');
+      afterSaveToast('Entrega atualizada');
     });
 
     body.querySelectorAll('[data-action="del-bairro"]').forEach(btn => {
@@ -597,7 +656,7 @@
       saveCatalog();
       applyToMenu();
       _editItemId = null;
-      toast('Item salvo');
+      afterSaveToast('Item salvo');
       renderAdminUI();
     });
 
@@ -607,7 +666,7 @@
       saveCatalog();
       applyToMenu();
       _editItemId = null;
-      toast('Item excluído');
+      afterSaveToast('Item excluído');
       renderAdminUI();
     });
 
@@ -632,7 +691,7 @@
       }));
       saveCatalog();
       applyToMenu();
-      toast('Adicionais salvos');
+      afterSaveToast('Adicionais salvos');
     });
 
     body.querySelectorAll('[data-action="del-adic"]').forEach(btn => {
@@ -657,42 +716,46 @@
       _catalog = seedFromPageDefaults();
       saveCatalog();
       applyToMenu();
-      toast('Cardápio padrão restaurado');
+      afterSaveToast('Cardápio padrão restaurado');
       renderAdminUI();
     });
   }
 
-  function bindUI() {
-    document.getElementById('btnAdminMenu')?.addEventListener('click', () => {
-      if (_authed) abrirPainel();
-      else abrirGate();
-    });
+  function bindPageUI() {
     document.getElementById('adminEntrarBtn')?.addEventListener('click', tentarEntrarAdmin);
     document.getElementById('adminPinInput')?.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') tentarEntrarAdmin();
     });
-    document.getElementById('adminGateFechar')?.addEventListener('click', fecharGate);
-    document.getElementById('adminFechar')?.addEventListener('click', fecharPainel);
-    document.getElementById('adminOverlay')?.addEventListener('click', (e) => {
-      if (e.target.id === 'adminOverlay') fecharPainel();
-    });
+    document.getElementById('adminSairBtn')?.addEventListener('click', sairAdmin);
     document.querySelectorAll('.admin-tab').forEach(tab => {
       tab.addEventListener('click', () => setTab(tab.dataset.tab));
     });
   }
 
+  /** No menu (index.html): só carrega catálogo e aplica no cardápio. */
   function boot() {
     loadCatalog();
-    bindUI();
+    applyToMenu();
+  }
+
+  /** Na página admin.html: login + painel completo. */
+  function bootPage() {
+    loadCatalog();
+    bindPageUI();
+    if (isSessionAuthed()) {
+      _authed = true;
+      showApp();
+    } else {
+      showLogin();
+    }
   }
 
   window.MenuAdmin = {
     boot,
+    bootPage,
     loadCatalog,
     getCatalog,
     applyToMenu,
     getAdicionaisIdsForItem,
-    abrir: abrirPainel,
-    fechar: fecharPainel,
   };
 })();
