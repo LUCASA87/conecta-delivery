@@ -3999,7 +3999,7 @@
   if (/\.html?$/i.test(p)) p = p.replace(/\/[^/]*$/, '/');
   else if (p.charAt(p.length - 1) !== '/') p += '/';
   document.write('<script src="' + p + 'pedido-espera.js?v=7"><\/script>');
-  document.write('<script src="' + p + 'admin.js?v=2"><\/script>');
+  document.write('<script src="' + p + 'admin.js?v=3"><\/script>');
 })();
 </script>
 
@@ -4885,7 +4885,7 @@
   let _lancheUpsellNome = '';
   let _upsellLineId = null;
   let _upsellAdicionaisQty = {};
-  let _upsellAdicionaisPermitidos = null; // null = todos; [] = nenhum; [slugs] = filtro
+  let _upsellAdicionaisOverride = null; // lista do item (admin) ou null = catálogo global
   let _upsellBebidasQty = {};
   let _comboPendente = null;
 
@@ -5376,10 +5376,10 @@
     _upsellLineId = lineId;
     _lancheUpsellNome = nomeCombo;
     _upsellAdicionaisQty = {};
-    _upsellAdicionaisPermitidos = (window.MenuAdmin && typeof window.MenuAdmin.getAdicionaisIdsForItem === 'function')
-      ? window.MenuAdmin.getAdicionaisIdsForItem(comboId)
+    _upsellAdicionaisOverride = (window.MenuAdmin && typeof window.MenuAdmin.getAdicionaisForItem === 'function')
+      ? window.MenuAdmin.getAdicionaisForItem(comboId)
       : null;
-    _adicionaisCatalogo.forEach(a => { _upsellAdicionaisQty[a.id] = 0; });
+    adicionaisDisponiveisParaUpsell().forEach(a => { _upsellAdicionaisQty[a.id] = 0; });
     if (adicionaisDisponiveisParaUpsell().length) {
       setTimeout(mostrarUpsellAdicionais, 350);
     } else {
@@ -5435,10 +5435,10 @@
     _upsellLineId = lineId;
     _lancheUpsellNome = name;
     _upsellAdicionaisQty = {};
-    _upsellAdicionaisPermitidos = (window.MenuAdmin && typeof window.MenuAdmin.getAdicionaisIdsForItem === 'function')
-      ? window.MenuAdmin.getAdicionaisIdsForItem(id)
+    _upsellAdicionaisOverride = (window.MenuAdmin && typeof window.MenuAdmin.getAdicionaisForItem === 'function')
+      ? window.MenuAdmin.getAdicionaisForItem(id)
       : null;
-    _adicionaisCatalogo.forEach(a => { _upsellAdicionaisQty[a.id] = 0; });
+    adicionaisDisponiveisParaUpsell().forEach(a => { _upsellAdicionaisQty[a.id] = 0; });
     if (adicionaisDisponiveisParaUpsell().length) {
       setTimeout(mostrarUpsellAdicionais, 350);
     } else {
@@ -5472,11 +5472,8 @@
   }
 
   function adicionaisDisponiveisParaUpsell() {
-    let list = _adicionaisCatalogo || [];
-    const ids = _upsellAdicionaisPermitidos;
-    if (ids == null) return list;
-    if (!ids.length) return [];
-    return list.filter(a => ids.includes(a.slug) || ids.includes(a.id) || ids.includes(String(a.id).replace(/^adic_/, '')));
+    if (_upsellAdicionaisOverride != null) return _upsellAdicionaisOverride;
+    return _adicionaisCatalogo || [];
   }
 
   function syncAdicionaisNaLinha() {
@@ -5533,7 +5530,7 @@
     _lancheUpsellNome = '';
     _upsellLineId = null;
     _upsellAdicionaisQty = {};
-    _upsellAdicionaisPermitidos = null;
+    _upsellAdicionaisOverride = null;
     if (continuar) setTimeout(tentarUpsellBebida, 450);
   }
 
@@ -6716,6 +6713,9 @@
   window.renderAdicionais = renderAdicionais;
   window.imagemFallbackLanche = imagemFallbackLanche;
   window.showToast = showToast;
+  window.ifoodItemHtml = ifoodItemHtml;
+  window.comboPrecisaEscolhaBurger = comboPrecisaEscolhaBurger;
+  window.showTab = showTab;
 
   function demoMapItem(item, img) {
     return {

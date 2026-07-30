@@ -32,8 +32,8 @@ Diferenças do site real
 - Badge amarelo "DEMO" no canto
 - Botão preto "Admin" (abre admin.html)
 - Painel do proprietário em página própria: senha 1234
-  (horário, teleentrega, categorias, itens, adicionais por item)
   URL: admin.html
+  Cardápio: criar categoria → criar itens → criar adicionais no item
 - Dados do cardápio no HTML + localStorage do admin
 - Cadastro de cliente só no localStorage do navegador
 - Botão WhatsApp avisa que é demo (não envia)
