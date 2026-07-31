@@ -6,7 +6,7 @@
   const AUTH_SESSION_KEY = 'menu_demo_admin_ok';
 
   let _catalog = null;
-  let _tab = 'loja';
+  let _tab = 'dashboard';
   let _authed = false;
   const IS_ADMIN_PAGE = document.body?.dataset?.adminPage === '1';
 
@@ -401,12 +401,29 @@
     showLogin();
   }
 
+  const PAGE_META = {
+    dashboard: { title: 'Dashboard', sub: 'Visão geral do estabelecimento' },
+    loja: { title: 'Loja', sub: 'Status, horário e teleentrega' },
+    entrega: { title: 'Entrega', sub: 'Bairros e valores de frete' },
+    cardapio: { title: 'Cardápio', sub: 'Categorias → itens → adicionais' },
+    senha: { title: 'Senha', sub: 'Acesso do painel e restauração' },
+  };
+
   function setTab(tab) {
     _tab = tab;
     if (tab === 'cardapio') {
       _nav = { level: 'cats', catId: null, itemId: null, editingCat: false, editingItem: false, editingAdic: null };
     }
+    document.body.classList.remove('sidebar-open');
     renderAdminUI();
+  }
+
+  function updatePageHead() {
+    const meta = PAGE_META[_tab] || PAGE_META.dashboard;
+    const title = document.getElementById('adminPageTitle');
+    const sub = document.getElementById('adminPageSub');
+    if (title) title.textContent = meta.title;
+    if (sub) sub.textContent = meta.sub;
   }
 
   /* ───── Render ───── */
@@ -417,12 +434,73 @@
     document.querySelectorAll('.admin-tab').forEach(t => {
       t.classList.toggle('active', t.dataset.tab === _tab);
     });
+    updatePageHead();
 
-    if (_tab === 'loja') body.innerHTML = htmlLoja();
+    if (_tab === 'dashboard') body.innerHTML = htmlDashboard();
+    else if (_tab === 'loja') body.innerHTML = htmlLoja();
     else if (_tab === 'entrega') body.innerHTML = htmlEntrega();
     else if (_tab === 'cardapio') body.innerHTML = htmlCardapioNav();
     else if (_tab === 'senha') body.innerHTML = htmlSenha();
     bindAdminBody(body);
+  }
+
+  function htmlDashboard() {
+    const cats = getCategorias();
+    let totalItens = 0;
+    let totalAdics = 0;
+    cats.forEach(c => {
+      const itens = getItens(c.id);
+      totalItens += itens.length;
+      itens.forEach(it => { totalAdics += (it.adicionais || []).length; });
+    });
+    const h = _catalog.horario || {};
+    const afLabel = h.af === 'F' ? 'Fechada' : h.af === 'R' ? 'Só retirada' : 'Aberta';
+    const bairros = (_catalog.bairros || []).filter(b => b.ativo !== false).length;
+
+    return `
+      <div class="dash-grid">
+        <div class="dash-card">
+          <div class="label">Categorias</div>
+          <div class="value">${cats.length}</div>
+          <div class="meta">no cardápio</div>
+        </div>
+        <div class="dash-card">
+          <div class="label">Itens</div>
+          <div class="value">${totalItens}</div>
+          <div class="meta">${totalAdics} adicionais</div>
+        </div>
+        <div class="dash-card">
+          <div class="label">Loja</div>
+          <div class="value" style="font-size:1.25rem">${esc(afLabel)}</div>
+          <div class="meta">${esc(h.inicio || '00:00')} – ${esc(h.fim || '23:59')}</div>
+        </div>
+        <div class="dash-card">
+          <div class="label">Entrega</div>
+          <div class="value">${bairros}</div>
+          <div class="meta">${_catalog.teleentregaAtiva === false ? 'teleentrega off' : 'bairros ativos'}</div>
+        </div>
+      </div>
+      <section class="admin-section">
+        <h3>Atalhos</h3>
+        <div class="dash-actions">
+          <button type="button" class="dash-action" data-action="goto" data-tab="cardapio">
+            <strong>Gerenciar cardápio</strong>
+            <small>Criar categorias, itens e adicionais</small>
+          </button>
+          <button type="button" class="dash-action" data-action="goto" data-tab="loja">
+            <strong>Horário da loja</strong>
+            <small>Abrir, fechar ou só retirada</small>
+          </button>
+          <button type="button" class="dash-action" data-action="goto" data-tab="entrega">
+            <strong>Frete e bairros</strong>
+            <small>Valores de teleentrega</small>
+          </button>
+          <button type="button" class="dash-action" data-action="goto" data-tab="senha">
+            <strong>Senha e backup</strong>
+            <small>Trocar PIN ou restaurar padrão</small>
+          </button>
+        </div>
+      </section>`;
   }
 
   function htmlLoja() {
@@ -656,6 +734,10 @@
   }
 
   function bindAdminBody(body) {
+    body.querySelectorAll('[data-action="goto"]').forEach(btn => {
+      btn.addEventListener('click', () => setTab(btn.dataset.tab));
+    });
+
     body.querySelector('[data-action="salvar-loja"]')?.addEventListener('click', () => {
       _catalog.horario = {
         af: document.getElementById('admAf')?.value || 'A',
